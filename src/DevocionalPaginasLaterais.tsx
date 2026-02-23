@@ -138,7 +138,7 @@ export default function DevocionalPaginasLaterais({
                     key={`video-${pagina.id}-${paginaAtual === index ? 'active' : 'inactive'}`}
                     controls
                     preload="metadata"
-                    poster="./capa-video.png"
+                    poster="/alemdodevocional/capa-video.png"
                     className="w-full h-full bg-black"
                     aria-label={`Vídeo: ${pagina.titulo}`}
                   >

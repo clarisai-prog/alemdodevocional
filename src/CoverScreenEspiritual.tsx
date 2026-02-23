@@ -22,7 +22,7 @@ export default function CoverScreenEspiritual({
       {/* 🖼️ Imagem de Capa Inicial */}
       <div className="absolute inset-0 z-0">
         <img 
-          src="./capa-inicial.png" 
+          src="/alemdodevocional/capa-inicial.png" 
           alt="Capa Além do Devocional"
           className="w-full h-full object-cover"
         />
