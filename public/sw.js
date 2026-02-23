@@ -3,9 +3,11 @@ const RUNTIME_CACHE = 'devocional-runtime-v1';
 
 // Assets críticos para funcionamento offline
 const ASSETS_TO_CACHE = [
-  '/',
-  '/index.html',
-  '/manifest.json'
+  '/al-m-do-devocional/',
+  '/al-m-do-devocional/index.html',
+  '/al-m-do-devocional/manifest.json',
+  '/al-m-do-devocional/icon-192.png',
+  '/al-m-do-devocional/icon-512.png'
 ];
 
 // Install event - cachear assets críticos
@@ -70,7 +72,7 @@ self.addEventListener('fetch', (event) => {
             
             // Fallback: retorna página offline se disponível
             if (event.request.destination === 'document') {
-              return caches.match('/index.html');
+              return caches.match('/al-m-do-devocional/index.html');
             }
             
             // Para outros tipos, retorna erro
@@ -111,4 +113,3 @@ self.addEventListener('message', (event) => {
     self.skipWaiting();
   }
 });
-

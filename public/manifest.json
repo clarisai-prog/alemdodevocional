@@ -1,35 +1,35 @@
 {
   "name": "Além do Devocional",
   "short_name": "Devocional",
-  "description": "Um guia de estudo e aprofundamento prático na vida de oração.",
-  "start_url": "/",
-  "scope": "/",
+  "description": "Um guia de estudo e aprofundamento prático na vida de oração e Lectio Divina.",
+  "start_url": "/al-m-do-devocional/",
+  "scope": "/al-m-do-devocional/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#1a160d",
   "theme_color": "#cfaa6c",
-  "categories": ["lifestyle", "productivity"],
+  "categories": ["lifestyle", "spirituality"],
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "/al-m-do-devocional/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon-192-maskable.png",
+      "src": "/al-m-do-devocional/icon-192-maskable.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/icon-512.png",
+      "src": "/al-m-do-devocional/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/icon-512-maskable.png",
+      "src": "/al-m-do-devocional/icon-512-maskable.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
@@ -40,11 +40,11 @@
       "name": "Iniciar Aula",
       "short_name": "Aula",
       "description": "Iniciar a próxima aula de devocional",
-      "url": "/?start=lesson",
+      "url": "/al-m-do-devocional/?start=lesson",
       "icons": [
         {
-          "src": "/icon-96.png",
-          "sizes": "96x96",
+          "src": "/al-m-do-devocional/icon-192.png",
+          "sizes": "192x192",
           "type": "image/png"
         }
       ]

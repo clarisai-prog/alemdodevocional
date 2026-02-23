@@ -6,7 +6,9 @@ import './index.css';
 // Registrar Service Worker para PWA offline-first
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js', { scope: '/' })
+    // Usar caminho relativo para funcionar com base URL
+    const swPath = import.meta.env.BASE_URL + 'sw.js';
+    navigator.serviceWorker.register(swPath, { scope: import.meta.env.BASE_URL })
       .then((registration) => {
         console.log('✅ Service Worker registrado com sucesso:', registration);
         

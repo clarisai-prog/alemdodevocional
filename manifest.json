@@ -1,42 +1,47 @@
 {
   "name": "Além do Devocional",
   "short_name": "Devocional",
-  "description": "Um programa devotivo interativo com design elegante e funcionalidade offline",
-  "start_url": "https://seu-usuario.github.io/alem-do-devocional/",
-  "scope": "/alem-do-devocional/",
+  "description": "Um guia de estudo e aprofundamento prático na vida de oração e Lectio Divina.",
+  "start_url": "/al-m-do-devocional/",
+  "scope": "/al-m-do-devocional/",
   "display": "standalone",
   "orientation": "portrait",
-  "theme_color": "#1A2238",
-  "background_color": "#F5F2E9",
-  "categories": ["lifestyle", "productivity"],
+  "theme_color": "#cfaa6c",
+  "background_color": "#1a160d",
+  "categories": ["lifestyle", "spirituality"],
   "icons": [
     {
-      "src": "./icons/icon-192.png",
+      "src": "/al-m-do-devocional/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./icons/icon-512.png",
+      "src": "/al-m-do-devocional/icon-192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/al-m-do-devocional/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "/al-m-do-devocional/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "screenshots": [
     {
-      "src": "./assets/screen-1.png",
-      "sizes": "540x720",
+      "src": "/al-m-do-devocional/icon-192.png",
+      "sizes": "192x192",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "Página inicial"
-    },
-    {
-      "src": "./assets/screen-2.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "Versão desktop"
     }
   ]
 }

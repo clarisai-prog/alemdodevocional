@@ -4,16 +4,15 @@ const CACHE_NAME = 'alem-devocional-v1';
 // Lista de versões antigas para limpeza
 const OLD_CACHE_VERSIONS = [];
 
-// Assets a cachear
+// Assets a cachear (usando caminhos relativos à base)
 const ASSETS_TO_CACHE = [
-  './',
-  './index.html',
-  './design-tokens.css',
-  './manifest.json',
-  './icons/icon-192.png',
-  './icons/icon-512.png',
-  'https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Montserrat:wght@400;500;600;700&display=swap',
-  'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap'
+  '/al-m-do-devocional/',
+  '/al-m-do-devocional/index.html',
+  '/al-m-do-devocional/manifest.json',
+  '/al-m-do-devocional/icon-192.png',
+  '/al-m-do-devocional/icon-192-maskable.png',
+  '/al-m-do-devocional/icon-512.png',
+  '/al-m-do-devocional/icon-512-maskable.png'
 ];
 
 // Install event - cachear assets na instalação
@@ -84,7 +83,7 @@ self.addEventListener('fetch', (event) => {
         console.error('[SW] Fetch failed:', error);
         
         // Retorna página offline se disponível
-        return caches.match('./index.html');
+        return caches.match('/al-m-do-devocional/index.html');
       })
   );
 });
