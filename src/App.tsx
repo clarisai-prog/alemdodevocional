@@ -24,6 +24,8 @@ import {
   ClipboardCheck,
   Star
 } from 'lucide-react';
+import CoverScreenEspiritual from './CoverScreenEspiritual';
+import DevocionalPaginasLaterais from './DevocionalPaginasLaterais';
 
 // Image Constants from the provided HTML snippets
 const IMAGES = {
@@ -32,7 +34,7 @@ const IMAGES = {
   BOOKSTORE_BG: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBmbtXhltiPI5ae6I92UHrGMjuR_fvd0zAESIzxU62wM1wqZBDXK2vl0HtkfdWeqAxWlA_ya6QejL84XBdOLxCfL-S0XTkvtY2r5aMiZacdFdQxReuGxn9Mq4jdTTNWFqkEqokhySjQZ8FgnKjDWFFEkKjP2nGM6wdV2XPTbyHHLZauAJfvBrHTrSAUsM-o9OtiR-IU8t15ygxIvZyUyH_CljLekhck3ix7aouLqXSkSgqbnBKHo4MOlo3I50dm2xrt6ilKJOM8TRQs'
 };
 
-type Screen = 'cover' | 'lesson' | 'completion';
+type Screen = 'welcome' | 'sidebar' | 'lesson' | 'completion';
 
 // Componente para anunciar mudanças de rota para screen readers
 function PageAnnouncer({ currentPageTitle }: { currentPageTitle: string }) {
@@ -73,26 +75,68 @@ function BookmarkButton({ isBookmarked, onToggle, size = 24, className = "" }: B
 }
 
 export default function App() {
-  const [screen, setScreen] = useState<Screen>('cover');
+  const [screen, setScreen] = useState<Screen>('welcome');
+  const [currentLessonIndex, setCurrentLessonIndex] = useState<number>(0);
+
+  const handleWelcomeStart = () => {
+    setScreen('sidebar');
+  };
+
+  const handleLessonSelect = (index: number) => {
+    setCurrentLessonIndex(index);
+    setScreen('lesson');
+  };
+
+  const handleLessonComplete = () => {
+    setScreen('completion');
+  };
+
+  const handleBackToMenu = () => {
+    setScreen('sidebar');
+  };
+
+  const handleRestartFromWelcome = () => {
+    setCurrentLessonIndex(0);
+    setScreen('welcome');
+  };
 
   return (
     <div className="min-h-dvh bg-spiritual-dark flex justify-center overflow-x-hidden">
       <div className="w-full max-w-md relative bg-spiritual-dark shadow-2xl min-h-dvh flex flex-col">
-        <PageAnnouncer currentPageTitle={screen === 'cover' ? 'Tela Inicial' : screen === 'lesson' ? 'Aula de Estudo' : 'Conclusão'} />
+        <PageAnnouncer currentPageTitle={
+          screen === 'welcome' ? 'Página Inicial' : 
+          screen === 'sidebar' ? 'Navegação de Aulas' : 
+          screen === 'lesson' ? 'Aula de Estudo' : 
+          'Conclusão da Aula'
+        } />
         <AnimatePresence mode="wait">
-          {screen === 'cover' && (
-            <motion.div key="cover" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="h-full">
-              <CoverScreen onStart={() => setScreen('lesson')} />
+          {screen === 'welcome' && (
+            <motion.div key="welcome" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="h-full">
+              <CoverScreenEspiritual
+                onStart={handleWelcomeStart}
+                onChecklist={() => setScreen('sidebar')}
+                onWallpapers={() => alert('Wallpapers em desenvolvimento')}
+                titulo="Além do Devocional"
+                subtitulo="Aprofundamento Prático"
+                descricao="Uma jornada transformadora através dos 4 Degraus da Lectio Divina"
+              />
+            </motion.div>
+          )}
+          {screen === 'sidebar' && (
+            <motion.div key="sidebar" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="h-full">
+              <DevocionalPaginasLaterais
+                onConcluir={() => setScreen('lesson')}
+              />
             </motion.div>
           )}
           {screen === 'lesson' && (
             <motion.div key="lesson" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="h-full">
-              <LessonScreen onFinish={() => setScreen('completion')} onBack={() => setScreen('cover')} />
+              <LessonScreen onFinish={handleLessonComplete} onBack={handleBackToMenu} />
             </motion.div>
           )}
           {screen === 'completion' && (
             <motion.div key="completion" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="h-full">
-              <CompletionScreen onRestart={() => setScreen('cover')} />
+              <CompletionScreen onRestart={handleRestartFromWelcome} onContinue={handleBackToMenu} />
             </motion.div>
           )}
         </AnimatePresence>
@@ -367,7 +411,7 @@ function CrisisItem({ icon, title, text, quote }: { icon: React.ReactNode, title
   );
 }
 
-function CompletionScreen({ onRestart }: { onRestart: () => void }) {
+function CompletionScreen({ onRestart, onContinue }: { onRestart: () => void, onContinue?: () => void }) {
   return (
     <div className="flex flex-col h-dvh bg-spiritual-dark relative overflow-hidden">
 
@@ -470,6 +514,26 @@ function CompletionScreen({ onRestart }: { onRestart: () => void }) {
               </button>
             </div>
           </div>
+
+          {/* Next Lesson Button */}
+          {onContinue && (
+            <button
+              onClick={onContinue}
+              className="glass-panel rounded-2xl p-6 flex items-center justify-between group active:scale-[0.98] transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-spiritual-dark"
+              aria-label="Ir para próxima aula"
+            >
+              <div className="flex flex-col gap-1">
+                <h3 className="text-white font-semibold text-lg font-serif">Próxima Aula</h3>
+                <p className="text-gold text-[10px] font-bold tracking-widest uppercase flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-gold inline-block" />
+                  Continue Sua Jornada
+                </p>
+              </div>
+              <div className="w-12 h-12 rounded-full bg-gold text-spiritual-dark flex items-center justify-center shadow-lg group-hover:bg-gold-light transition-colors">
+                <ArrowRight size={20} aria-hidden="true" />
+              </div>
+            </button>
+          )}
         </section>
       </div>
 
