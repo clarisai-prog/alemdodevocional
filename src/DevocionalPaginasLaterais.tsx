@@ -23,28 +23,30 @@ export default function DevocionalPaginasLaterais({
   const containerRef = useRef<HTMLDivElement>(null);
   const pageAnnouncerRef = useRef<HTMLDivElement>(null);
 
-  // Páginas padrão
+  // Páginas padrão - usando caminho correto com base URL
+  const baseUrl = import.meta.env.BASE_URL || '/alemdodevocional/';
+  
   const paginasDefault: Pagina[] = [
     { 
       id: 1, 
       titulo: "Prudência e Justiça", 
       sub: "A Ordem da Vida",
       conteudo: "Este guia existe para te arrancar da 'leitura passiva' e do perigo da espiritualidade moderna: o perfeccionismo que te trata como uma máquina de produtividade e não como um filho amado.",
-      videoUrl: "/videos/video-1.mp4"
+      videoUrl: `${baseUrl}videos/video-1.mp4`
     },
     { 
       id: 2, 
       titulo: "Fortaleza", 
       sub: "A Ciência de Levantar",
       conteudo: "A Palavra de Deus é viva e eficaz. Ler um livro é buscar informação; ler a Bíblia é escutar uma Pessoa. Siga a escada milenar de 4 passos para aprofundar sua vida de oração.",
-      videoUrl: "/videos/video-2.mp4"
+      videoUrl: `${baseUrl}videos/video-2.mp4`
     },
     { 
       id: 3, 
       titulo: "Temperança", 
       sub: "O Domínio do Conforto",
       conteudo: "Ficar em paz. Repouse no silêncio de saber que Deus te acolhe, sem precisar dizer mais nada. Apenas esteja presente.",
-      videoUrl: "/videos/video-3.mp4"
+      videoUrl: `${baseUrl}videos/video-3.mp4`
     }
   ];
 
@@ -62,8 +64,10 @@ export default function DevocionalPaginasLaterais({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'ArrowRight') {
+        e.preventDefault();
         irParaProxima();
       } else if (e.key === 'ArrowLeft') {
+        e.preventDefault();
         irParaAnterior();
       }
     };
@@ -73,17 +77,17 @@ export default function DevocionalPaginasLaterais({
   }, [paginaAtual, paginas.length]);
 
   const irParaProxima = () => {
-    const novaP = Math.min(paginaAtual + 1, paginas.length - 1);
-    if (novaP !== paginaAtual) {
-      setPaginaAtual(novaP);
-    }
+    setPaginaAtual((prev) => {
+      const novaP = Math.min(prev + 1, paginas.length - 1);
+      return novaP;
+    });
   };
 
   const irParaAnterior = () => {
-    const novaP = Math.max(paginaAtual - 1, 0);
-    if (novaP !== paginaAtual) {
-      setPaginaAtual(novaP);
-    }
+    setPaginaAtual((prev) => {
+      const novaP = Math.max(prev - 1, 0);
+      return novaP;
+    });
   };
 
   const handleConcluir = () => {
@@ -130,7 +134,7 @@ export default function DevocionalPaginasLaterais({
 
       {/* 🔀 CONTAINER DE NAVEGAÇÃO LATERAL */}
       <div 
-        className="flex w-full h-full transition-all duration-700 ease-in-out"
+        className="flex w-full h-full transition-transform duration-700 ease-in-out"
         style={{ transform: `translateX(-${paginaAtual * 100}%)` }}
       >
         {paginas.map((pagina, index) => (
@@ -138,7 +142,7 @@ export default function DevocionalPaginasLaterais({
           /* 📄 CADA PÁGINA INDIVIDUAL */
           <main 
             key={pagina.id} 
-            className="min-w-full h-full overflow-y-auto pb-32 pt-16 scroll-hide"
+            className="min-w-full w-full h-full overflow-y-auto pb-32 pt-16 scroll-hide flex-shrink-0"
             tabIndex={-1}
             ref={index === paginaAtual ? containerRef : null}
             aria-hidden={index !== paginaAtual}
@@ -150,6 +154,7 @@ export default function DevocionalPaginasLaterais({
               <video
                 key={`video-${pagina.id}`}
                 controls
+                preload="metadata"
                 className="w-full aspect-video bg-black rounded-2xl shadow-xl mx-auto max-w-2xl mb-6"
                 aria-label={`Vídeo: ${pagina.titulo}`}
               >
