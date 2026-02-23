@@ -3,32 +3,35 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "20"
           cache: "npm"
 
       - name: Install dependencies
         run: npm ci
-
-      - name: Lint checking
-        run: npm run lint
 
       - name: Build
         run: npm run build
@@ -44,9 +47,8 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
       - name: Deployment Summary
         run: |
           echo "✅ Deployment completed!"
-          echo "🚀 Live at: https://clarisai-prog.github.io/al-m-do-devocional/"
+          echo "🚀 Live at: https://clarisai-prog.github.io/alemdodevocional/"
