@@ -131,18 +131,21 @@ export default function DevocionalPaginasLaterais({
             aria-hidden={index !== paginaAtual}
           >
             <div className="max-w-2xl mx-auto px-6">
-              {/* Vídeo */}
+              {/* Vídeo com Capa */}
               {pagina.videoUrl && (
-                <video
-                  key={`video-${pagina.id}-${paginaAtual === index ? 'active' : 'inactive'}`}
-                  controls
-                  preload="metadata"
-                  className="w-full aspect-video bg-black rounded-2xl shadow-xl mb-6"
-                  aria-label={`Vídeo: ${pagina.titulo}`}
-                >
-                  <source src={pagina.videoUrl} type="video/mp4" />
-                  Seu navegador não suporta vídeos HTML5
-                </video>
+                <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-xl mb-6">
+                  <video
+                    key={`video-${pagina.id}-${paginaAtual === index ? 'active' : 'inactive'}`}
+                    controls
+                    preload="metadata"
+                    poster="./capa-video.png"
+                    className="w-full h-full bg-black"
+                    aria-label={`Vídeo: ${pagina.titulo}`}
+                  >
+                    <source src={pagina.videoUrl} type="video/mp4" />
+                    Seu navegador não suporta vídeos HTML5
+                  </video>
+                </div>
               )}
 
               {/* Conteúdo */}

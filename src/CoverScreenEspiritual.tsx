@@ -17,32 +17,27 @@ export default function CoverScreenEspiritual({
   const [isHovering, setIsHovering] = useState(false);
 
   return (
-    <div className="relative h-dvh w-full overflow-hidden bg-gradient-to-b from-[#2a2a4a] via-[#1f1b2a] to-[#0f0f1a] flex flex-col justify-center items-center px-6 py-12">
+    <div className="relative h-dvh w-full overflow-hidden flex flex-col justify-center items-center px-6 py-12">
       
+      {/* 🖼️ Imagem de Capa Inicial */}
+      <div className="absolute inset-0 z-0">
+        <img 
+          src="./capa-inicial.png" 
+          alt="Capa Além do Devocional"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1a160d]/80 via-[#1a160d]/60 to-[#1a160d]/90"></div>
+      </div>
+
       {/* 🌟 Efeito de Partículas Estreladas */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
         {/* Bokeh grande ao fundo */}
         <div className="absolute top-20 left-1/4 w-96 h-96 bg-gold/5 rounded-full blur-3xl animate-pulse"></div>
         <div className="absolute bottom-32 right-1/4 w-80 h-80 bg-gold/3 rounded-full blur-3xl animate-pulse animation-delay-2000"></div>
-        
-        {/* Partículas pequenas flutuantes */}
-        {[...Array(20)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-gold rounded-full opacity-40 animate-float"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `float ${3 + Math.random() * 4}s ease-in-out infinite`,
-              animationDelay: `${Math.random() * 2}s`,
-            }}
-            aria-hidden="true"
-          />
-        ))}
       </div>
 
       {/* 📍 Conteúdo Principal */}
-      <div className="relative z-10 flex flex-col items-center text-center max-w-2xl mx-auto">
+      <div className="relative z-20 flex flex-col items-center text-center max-w-2xl mx-auto">
         
         {/* ✨ Símbolo Decorativo V */}
         <div 
@@ -67,7 +62,7 @@ export default function CoverScreenEspiritual({
 
         {/* 📋 Rótulo GUIA DE ESTUDO */}
         <p 
-          className="text-[10px] tracking-[0.35em] text-gold/60 uppercase font-semibold mb-4 animate-fade-in"
+          className="text-[10px] tracking-[0.35em] text-gold/80 uppercase font-semibold mb-4 animate-fade-in"
           style={{ animationDelay: '0.1s' }}
         >
           Guia de Estudo
@@ -75,7 +70,7 @@ export default function CoverScreenEspiritual({
 
         {/* 🎯 Título Principal */}
         <h1 
-          className="text-4xl md:text-6xl font-serif text-white font-light tracking-tight mb-3 animate-fade-in leading-tight"
+          className="text-4xl md:text-6xl font-serif text-white font-light tracking-tight mb-3 animate-fade-in leading-tight drop-shadow-lg"
           style={{ animationDelay: '0.2s' }}
         >
           {titulo}
@@ -83,7 +78,7 @@ export default function CoverScreenEspiritual({
 
         {/* ✍️ Subtítulo em Itálico */}
         <p 
-          className="text-lg md:text-xl font-serif italic text-gold/80 mb-4 animate-fade-in"
+          className="text-lg md:text-xl font-serif italic text-gold mb-4 animate-fade-in drop-shadow-md"
           style={{ animationDelay: '0.3s' }}
         >
           {subtitulo}
@@ -91,7 +86,7 @@ export default function CoverScreenEspiritual({
 
         {/* 📝 Descrição */}
         <p 
-          className="text-sm md:text-base text-slate-300 leading-relaxed max-w-md animate-fade-in font-light mb-8"
+          className="text-sm md:text-base text-slate-200 leading-relaxed max-w-md animate-fade-in font-light mb-8 drop-shadow-md"
           style={{ animationDelay: '0.4s' }}
         >
           {descricao}
@@ -103,7 +98,7 @@ export default function CoverScreenEspiritual({
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
           aria-label="Iniciar tutorial guiado do Ambiente Espiritual"
-          className="group relative overflow-hidden rounded-full py-4 px-8 font-semibold text-sm uppercase tracking-wide transition-all duration-300 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1f1b2a] focus-visible:ring-gold min-h-[56px] animate-fade-in"
+          className="group relative overflow-hidden rounded-full py-4 px-8 font-semibold text-sm uppercase tracking-wide transition-all duration-300 active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1f1b2a] focus-visible:ring-gold min-h-[56px] animate-fade-in shadow-xl"
           style={{ animationDelay: '0.5s' }}
         >
           {/* Background animado */}
