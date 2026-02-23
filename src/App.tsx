@@ -34,12 +34,51 @@ const IMAGES = {
 
 type Screen = 'cover' | 'lesson' | 'completion';
 
+// Componente para anunciar mudanças de rota para screen readers
+function PageAnnouncer({ currentPageTitle }: { currentPageTitle: string }) {
+  return (
+    <div 
+      aria-live="polite" 
+      aria-atomic="true" 
+      className="sr-only pointer-events-none"
+    >
+      {`Navegou para: ${currentPageTitle}`}
+    </div>
+  );
+}
+
+// Componente reutilizável para botão de bookmark com estado acessível
+interface BookmarkButtonProps {
+  isBookmarked: boolean;
+  onToggle: () => void;
+  size?: number;
+  className?: string;
+}
+
+function BookmarkButton({ isBookmarked, onToggle, size = 24, className = "" }: BookmarkButtonProps) {
+  return (
+    <button 
+      onClick={onToggle}
+      aria-pressed={isBookmarked}
+      aria-label={isBookmarked ? "Remover dos favoritos" : "Salvar nos favoritos"}
+      className={`min-h-[48px] min-w-[48px] flex items-center justify-center rounded-full active:scale-95 transition-transform focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-spiritual-dark focus-visible:ring-gold ${className}`}
+    >
+      <Bookmark 
+        size={size} 
+        aria-hidden="true"
+        className={isBookmarked ? "fill-gold text-gold" : "text-current"}
+      />
+    </button>
+  );
+}
+
 export default function App() {
   const [screen, setScreen] = useState<Screen>('cover');
 
   return (
     <div className="min-h-dvh bg-spiritual-dark flex justify-center overflow-x-hidden">
       <div className="w-full max-w-md relative bg-spiritual-dark shadow-2xl min-h-dvh flex flex-col">
+        <PageAnnouncer currentPageTitle={screen === 'cover' ? 'Tela Inicial' : screen === 'lesson' ? 'Aula de Estudo' : 'Conclusão'} />
         <AnimatePresence mode="wait">
           {screen === 'cover' && (
             <motion.div key="cover" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="h-full">
@@ -63,6 +102,8 @@ export default function App() {
 }
 
 function CoverScreen({ onStart }: { onStart: () => void }) {
+  const [isBookmarked, setIsBookmarked] = React.useState(false);
+
   return (
     <div className="relative h-dvh flex flex-col justify-between px-6 pb-12 pt-safe overflow-hidden">
 
@@ -80,12 +121,17 @@ function CoverScreen({ onStart }: { onStart: () => void }) {
 
       {/* Top Actions */}
       <div className="relative z-10 flex justify-between items-center opacity-60">
-        <button className="text-white p-2 rounded-full hover:bg-white/5">
-          <X size={24} />
+        <button 
+          aria-label="Fechar devocional"
+          className="min-h-[48px] min-w-[48px] flex items-center justify-center text-white rounded-full hover:bg-white/5 active:scale-95 transition-transform focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-spiritual-dark focus-visible:ring-gold"
+        >
+          <X size={24} aria-hidden="true" />
         </button>
-        <button className="text-white p-2 rounded-full hover:bg-white/5">
-          <Bookmark size={24} />
-        </button>
+        <BookmarkButton 
+          isBookmarked={isBookmarked}
+          onToggle={() => setIsBookmarked(!isBookmarked)}
+          className="text-white hover:bg-white/5 hover:opacity-100"
+        />
       </div>
 
       {/* Center Content */}
@@ -141,6 +187,7 @@ function CoverScreen({ onStart }: { onStart: () => void }) {
 
         <button 
           onClick={onStart}
+          aria-label="Iniciar aula de aprofundamento prático"
           className="group relative w-full overflow-hidden rounded-xl glass-panel p-1 transition-all duration-300 hover:bg-gold/10 active:scale-[0.98]"
         >
           <div className="relative flex items-center justify-between rounded-lg px-6 py-4 bg-gradient-to-r from-gold/10 to-transparent group-hover:from-gold/20 transition-all">
@@ -149,12 +196,12 @@ function CoverScreen({ onStart }: { onStart: () => void }) {
               <span className="text-[10px] text-slate-400 uppercase tracking-wider group-hover:text-slate-300 transition-colors">Toque para começar</span>
             </div>
             <div className="h-10 w-10 rounded-full bg-gold flex items-center justify-center shadow-[0_0_15px_rgba(207,170,108,0.4)] group-hover:shadow-[0_0_25px_rgba(207,170,108,0.6)] transition-all">
-              <ArrowRight className="text-spiritual-dark font-bold" size={20} />
+              <ArrowRight className="text-spiritual-dark font-bold" size={20} aria-hidden="true" />
             </div>
           </div>
         </button>
 
-        <button className="text-[10px] text-slate-500 hover:text-gold transition-colors tracking-widest uppercase font-semibold">
+        <button aria-label="Ver detalhes do curso" className="text-[10px] text-slate-500 hover:text-gold transition-colors tracking-widest uppercase font-semibold">
           Ver Detalhes do Curso
         </button>
       </div>
@@ -163,6 +210,8 @@ function CoverScreen({ onStart }: { onStart: () => void }) {
 }
 
 function LessonScreen({ onFinish, onBack }: { onFinish: () => void, onBack: () => void }) {
+  const [isBookmarked, setIsBookmarked] = React.useState(false);
+
   return (
     <div className="flex flex-col h-dvh bg-spiritual-charcoal">
 
@@ -175,21 +224,31 @@ function LessonScreen({ onFinish, onBack }: { onFinish: () => void, onBack: () =
           referrerPolicy="no-referrer"
         />
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-14 h-14 rounded-full bg-gold/20 backdrop-blur-sm flex items-center justify-center border border-gold cursor-pointer hover:bg-gold/30 transition-all">
-            <Play className="text-white fill-white ml-1" size={28} />
-          </div>
+          <button 
+            aria-label="Reproduzir vídeo da aula"
+            className="w-14 h-14 rounded-full bg-gold/20 backdrop-blur-sm flex items-center justify-center border border-gold cursor-pointer hover:bg-gold/30 transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-gold"
+          >
+            <Play className="text-white fill-white ml-1" size={28} aria-hidden="true" />
+          </button>
         </div>
         <div className="absolute bottom-0 left-0 w-full h-1 bg-gray-800">
           <div className="h-full w-1/3 bg-gold"></div>
         </div>
         <div className="absolute top-4 left-4 right-4 flex justify-between items-center text-white">
-          <button onClick={onBack} className="p-2 bg-black/20 rounded-full backdrop-blur-md border border-white/10">
-            <ArrowLeft size={16} />
+          <button 
+            onClick={onBack} 
+            aria-label="Voltar para tela anterior"
+            className="min-h-[48px] min-w-[48px] flex items-center justify-center bg-black/20 rounded-full backdrop-blur-md border border-white/10 active:scale-95 transition-transform focus-visible:ring-2 focus-visible:ring-gold"
+          >
+            <ArrowLeft size={16} aria-hidden="true" />
           </button>
           <span className="text-[10px] tracking-[0.2em] font-medium uppercase opacity-80">Guia de Estudo</span>
-          <button className="p-2 bg-black/20 rounded-full backdrop-blur-md border border-white/10">
-            <Bookmark size={16} />
-          </button>
+          <BookmarkButton 
+            isBookmarked={isBookmarked}
+            onToggle={() => setIsBookmarked(!isBookmarked)}
+            size={16}
+            className="bg-black/20 rounded-full backdrop-blur-md border border-white/10 text-white"
+          />
         </div>
       </div>
 
@@ -208,11 +267,11 @@ function LessonScreen({ onFinish, onBack }: { onFinish: () => void, onBack: () =
               <span className="text-[120px] leading-none font-serif text-gold font-bold">4</span>
             </div>
           </div>
-          <div className="mt-6 text-[15px] leading-relaxed text-gray-300 border-l-2 border-gold pl-4 italic">
+          <div className="mt-6 text-base md:text-lg leading-relaxed text-slate-100 border-l-2 border-gold pl-4 italic">
             "A Palavra de Deus é viva e eficaz." 
-            <span className="text-[10px] not-italic text-slate-500 block mt-1">— Hebreus 4:12</span>
+            <span className="text-sm not-italic text-slate-400 block mt-2">— Hebreus 4:12</span>
           </div>
-          <p className="mt-4 text-[15px] leading-relaxed text-gray-400 font-light">
+          <p className="mt-4 text-base md:text-lg leading-relaxed text-slate-200 font-light">
             Ler um livro é buscar informação; ler a Bíblia é escutar uma Pessoa. Siga a escada milenar de 4 passos para aprofundar sua vida de oração.
           </p>
         </header>
@@ -229,10 +288,10 @@ function LessonScreen({ onFinish, onBack }: { onFinish: () => void, onBack: () =
               <div className="absolute top-0 right-0 w-16 h-16 bg-gold/5 rounded-bl-full -mr-4 -mt-4" />
               <div className="flex items-baseline space-x-3 mb-2">
                 <span className="text-gold text-lg font-bold font-serif">{step.id}.</span>
-                <h3 className="text-xl text-white font-serif font-semibold">{step.title}</h3>
+                <h3 className="text-xl text-slate-100 font-serif font-semibold">{step.title}</h3>
               </div>
-              <p className="text-sm text-gray-400 leading-relaxed font-light">
-                <span className="block mb-2 p-3 bg-gold/5 border-l-2 border-gold text-gold-light italic rounded-r-lg">
+              <p className="text-base md:text-lg text-slate-200 leading-relaxed font-light">
+                <span className="block mb-2 p-3 bg-gold/5 border-l-2 border-gold text-amber-100 italic rounded-r-lg">
                   {step.text.split('? ')[0]}?
                 </span>
                 {step.text.split('? ')[1] || step.text}
@@ -276,7 +335,8 @@ function LessonScreen({ onFinish, onBack }: { onFinish: () => void, onBack: () =
       <div className="fixed bottom-8 left-1/2 -translate-x-1/2 w-full max-w-md px-6 z-50">
         <button 
           onClick={onFinish}
-          className="w-full py-4 rounded-xl bg-gold text-spiritual-dark font-bold uppercase tracking-widest text-xs shadow-[0_4px_20px_rgba(207,170,108,0.3)] hover:bg-gold-light transition-all active:scale-95"
+          aria-label="Concluir estudo da aula"
+          className="w-full py-4 rounded-xl bg-gold text-spiritual-dark font-bold uppercase tracking-widest text-xs shadow-[0_4px_20px_rgba(207,170,108,0.3)] hover:bg-gold-light transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-spiritual-charcoal focus-visible:ring-gold"
         >
           Concluir Estudo
         </button>
@@ -288,17 +348,17 @@ function LessonScreen({ onFinish, onBack }: { onFinish: () => void, onBack: () =
 function CrisisItem({ icon, title, text, quote }: { icon: React.ReactNode, title: string, text: string, quote?: string }) {
   return (
     <div className="pl-4 border-l border-gray-800 space-y-2">
-      <h4 className="text-white font-semibold flex items-center gap-2">
-        <span className="text-slate-500">{icon}</span>
+      <h4 className="text-slate-100 font-semibold flex items-center gap-2">
+        <span className="text-slate-400">{icon}</span>
         {title}
       </h4>
-      <p className="text-sm text-gray-400 leading-relaxed font-light">
+      <p className="text-base md:text-lg text-slate-200 leading-relaxed font-light">
         {text}
       </p>
       {quote && (
         <div className="mt-3 p-4 bg-white/5 border-l-2 border-gold rounded-r-lg relative overflow-hidden group">
-          <Quote className="absolute -top-1 -right-1 text-gold/10 rotate-12" size={48} />
-          <p className="text-gold-light italic text-sm font-light relative z-10 leading-relaxed">
+          <Quote className="absolute -top-1 -right-1 text-gold/10 rotate-12" size={48} aria-hidden="true" />
+          <p className="text-amber-100 italic text-base md:text-lg font-light relative z-10 leading-relaxed">
             "{quote}"
           </p>
         </div>
@@ -315,8 +375,12 @@ function CompletionScreen({ onRestart }: { onRestart: () => void }) {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-lg h-[400px] bg-gold/10 rounded-full blur-[100px] opacity-60 pointer-events-none" />
 
       <header className="flex justify-end p-6 pt-12 relative z-10">
-        <button onClick={onRestart} className="p-2 rounded-full text-slate-400 hover:text-white hover:bg-white/5 transition-colors">
-          <X size={24} />
+        <button 
+          onClick={onRestart} 
+          aria-label="Fechar e voltar ao início"
+          className="min-h-[48px] min-w-[48px] flex items-center justify-center rounded-full text-slate-400 hover:text-white hover:bg-white/5 transition-colors active:scale-95 focus-visible:ring-2 focus-visible:ring-gold"
+        >
+          <X size={24} aria-hidden="true" />
         </button>
       </header>
 
@@ -339,7 +403,7 @@ function CompletionScreen({ onRestart }: { onRestart: () => void }) {
             Obrigado por <br/> <span className="text-gold not-italic">ir além</span>
           </h1>
           
-          <p className="text-slate-300 text-sm leading-relaxed max-w-xs font-light mx-auto">
+          <p className="text-slate-200 text-base md:text-lg leading-relaxed max-w-xs font-light mx-auto">
             Sua jornada de aprofundamento continua. O conhecimento é apenas o começo da transformação.
           </p>
         </section>
@@ -357,7 +421,15 @@ function CompletionScreen({ onRestart }: { onRestart: () => void }) {
               a.click();
               URL.revokeObjectURL(url);
             }}
-            className="glass-panel rounded-2xl p-6 flex items-center justify-between group active:scale-[0.98] transition-all cursor-pointer"
+            role="button"
+            tabIndex={0}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.currentTarget.click();
+              }
+            }}
+            aria-label="Baixar guia de estudo em formato texto"
+            className="glass-panel rounded-2xl p-6 flex items-center justify-between group active:scale-[0.98] transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-spiritual-dark"
           >
             <div className="flex flex-col gap-1">
               <h3 className="text-white font-semibold text-lg font-serif">Guia de Estudo</h3>
@@ -367,7 +439,7 @@ function CompletionScreen({ onRestart }: { onRestart: () => void }) {
               </p>
             </div>
             <div className="w-12 h-12 rounded-full bg-gold text-spiritual-dark flex items-center justify-center shadow-lg group-hover:bg-gold-light transition-colors">
-              <Download size={20} />
+              <Download size={20} aria-hidden="true" />
             </div>
           </div>
 
@@ -387,14 +459,14 @@ function CompletionScreen({ onRestart }: { onRestart: () => void }) {
                   Recomendado
                 </span>
                 <h2 className="text-3xl font-serif text-white italic mb-2">Explore nossa Livraria</h2>
-                <p className="text-slate-300 text-sm font-light line-clamp-2">
+                <p className="text-slate-200 text-base leading-relaxed line-clamp-2 font-light">
                   Descubra obras selecionadas para aprofundar sua fé e conhecimento teológico.
                 </p>
               </div>
               
-              <button className="w-full bg-gold hover:bg-gold-light text-spiritual-dark font-bold text-sm py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95">
+              <button className="w-full bg-gold hover:bg-gold-light text-spiritual-dark font-bold text-sm py-4 px-6 rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-spiritual-dark focus-visible:ring-gold" aria-label="Explorar livraria de obras teológicas selecionadas">
                 <span>Ver Coleção</span>
-                <ArrowRight size={16} />
+                <ArrowRight size={16} aria-hidden="true" />
               </button>
             </div>
           </div>
@@ -418,11 +490,13 @@ function NavItem({ icon, label, active, onClick }: { icon: React.ReactNode, labe
   return (
     <button 
       onClick={onClick}
-      className={`flex flex-col items-center gap-1.5 transition-colors ${active ? 'text-gold' : 'text-slate-500 hover:text-slate-300'}`}
+      aria-label={label}
+      aria-current={active ? 'page' : undefined}
+      className={`flex flex-col items-center justify-center gap-1.5 transition-colors min-h-[48px] min-w-[12rem] py-2 focus-visible:ring-2 focus-visible:ring-gold rounded ${active ? 'text-gold' : 'text-slate-500 hover:text-slate-300'}`}
     >
       <div className="relative">
         {icon}
-        {active && <div className="absolute -top-1 -right-1 w-2 h-2 bg-gold rounded-full shadow-[0_0_8px_rgba(207,170,108,0.8)]" />}
+        {active && <div className="absolute -top-1 -right-1 w-2 h-2 bg-gold rounded-full shadow-[0_0_8px_rgba(207,170,108,0.8)]" aria-hidden="true" />}
       </div>
       <span className="text-[10px] font-bold uppercase tracking-widest">{label}</span>
     </button>
